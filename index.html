@@ -33,36 +33,8 @@
         p.subtitle {
             font-style: italic;
             color: #555555;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             font-size: 1.1rem;
-        }
-
-        /* Instruction Section */
-        .instructions {
-            text-align: left;
-            background-color: #f9f9f9;
-            border: 1px solid #e5e5e5;
-            padding: 20px 25px;
-            margin-bottom: 40px;
-            font-size: 0.95rem;
-        }
-
-        .instructions h3 {
-            margin-top: 0;
-            font-weight: normal;
-            font-size: 1.1rem;
-            border-bottom: 1px solid #111111;
-            padding-bottom: 5px;
-            display: inline-block;
-        }
-
-        .instructions ol {
-            margin: 10px 0 0 20px;
-            padding: 0;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
         }
 
         .button-container {
@@ -87,6 +59,7 @@
             border-radius: 0;
             transition: all 0.2s ease-in-out;
             box-sizing: border-box;
+            text-align: center;
         }
 
         .scripture-btn:hover {
@@ -95,20 +68,27 @@
             cursor: pointer;
         }
 
-        /* Secondary Feedback Button */
-        .feedback-btn {
+        /* Secondary Action Buttons (How to Use & Feedback) */
+        .secondary-btn {
             background-color: #ffffff;
             color: #555555;
             border: 1px dashed #555555;
-            margin-top: 40px;
             font-size: 0.95rem;
-            max-width: 200px;
+            max-width: 220px;
         }
 
-        .feedback-btn:hover {
+        .secondary-btn:hover {
             background-color: #555555;
             color: #ffffff;
             border-style: solid;
+        }
+
+        .how-to-use-btn {
+            margin-top: 40px; /* Space between scriptures and auxiliary buttons */
+        }
+
+        .feedback-btn {
+            margin-top: 0px;
         }
 
         footer {
@@ -117,7 +97,7 @@
             color: #777777;
         }
 
-        /* Modal Popup System for Tally Form */
+        /* Modal Popup System */
         .modal {
             display: none; 
             position: fixed; 
@@ -127,17 +107,18 @@
             width: 100%; 
             height: 100%; 
             overflow: auto; 
-            background-color: rgba(255,255,255,0.95); /* High-contrast light overlay */
+            background-color: rgba(255,255,255,0.95);
         }
 
         .modal-content {
             background-color: #ffffff;
-            margin: 5% auto; 
-            padding: 20px;
+            margin: 10% auto; 
+            padding: 30px;
             border: 1px solid #111111;
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             position: relative;
+            text-align: left;
         }
 
         .close-btn {
@@ -148,7 +129,25 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            text-decoration: none;
+        }
+
+        /* Inside How To Use Modal */
+        .instructions h3 {
+            margin-top: 0;
+            font-weight: normal;
+            font-size: 1.3rem;
+            border-bottom: 1px solid #111111;
+            padding-bottom: 5px;
+        }
+
+        .instructions ol {
+            margin: 20px 0 0 20px;
+            padding: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
         }
     </style>
 </head>
@@ -157,16 +156,6 @@
     <div class="container">
         <h1>Samvadatvam</h1>
         <p class="subtitle">AI Chat With Sanathana Dharma Scriptures</p>
-
-        <!-- How To Use Instructions -->
-        <div class="instructions">
-            <h3>How To Use</h3>
-            <ol>
-                <li>Click on any of the scriptures below.</li>
-                <li>It will take you to the dedicated chatbox for that scripture.</li>
-                <li>Sign in with your Gmail account to begin the dialogue.</li>
-            </ol>
-        </div>
 
         <div class="button-container">
             <!-- Ramayana Link -->
@@ -193,8 +182,11 @@
                 Vishnu Sahasranama
             </a>
 
+            <!-- How To Use Trigger -->
+            <button id="openInstructions" class="scripture-btn secondary-btn how-to-use-btn">How To Use?</button>
+
             <!-- Share Feedback Trigger -->
-            <button id="openFeedback" class="scripture-btn feedback-btn">Share Feedback</button>
+            <button id="openFeedback" class="scripture-btn secondary-btn feedback-btn">Share Feedback</button>
         </div>
 
         <footer>
@@ -202,40 +194,51 @@
         </footer>
     </div>
 
-    <!-- Tally Feedback Modal Container -->
+    <!-- How To Use Modal -->
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content instructions">
+            <span class="close-btn" onclick="closeModal('instructionsModal')">&times;</span>
+            <h3>How To Use</h3>
+            <ol>
+                <li>Click on any of the above scriptures.</li>
+                <li>It takes you to our chatbox of that scripture.</li>
+                <li>Sign in with your Gmail account.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Tally Feedback Modal -->
     <div id="feedbackModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <!-- Embedded Tally Form -->
+        <div class="modal-content" style="max-width: 600px; margin: 5% auto;">
+            <span class="close-btn" onclick="closeModal('feedbackModal')">&times;</span>
             <iframe data-tally-src="https://tally.so/embed/xXlzpJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="550" frameborder="0" marginheight="0" marginwidth="0" title="Samvadatvam"></iframe>
         </div>
     </div>
 
     <script>
-        // Modal Logic
-        var modal = document.getElementById("feedbackModal");
-        var btn = document.getElementById("openFeedback");
-        var span = document.getElementsByClassName("close-btn")[0];
+        // Open Logic
+        document.getElementById("openInstructions").onclick = function() {
+            document.getElementById("instructionsModal").style.display = "block";
+        }
 
-        // Open Modal & Load Tally script dynamically if needed
-        btn.onclick = function() {
-            modal.style.display = "block";
+        document.getElementById("openFeedback").onclick = function() {
+            document.getElementById("feedbackModal").style.display = "block";
             loadTally();
         }
 
-        // Close Modal via 'X'
-        span.onclick = function() {
-            modal.style.display = "none";
+        // Close Logic
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
         }
 
-        // Close Modal by clicking outside of it
+        // Close when clicking outside content area
         window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
             }
         }
 
-        // Tally widget initialization handler
+        // Tally embed loader
         function loadTally() {
             var d=document, w="https://tally.so/widgets/embed.js", v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};
             if("undefined"!=typeof Tally) v();
